@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+    <var name="entry" expr="'init'"/>
+
+    <form id="GetDeliveryTime">
+
+      <field name="time">
+        <property name="nuance.grammarlabel" value="GetDeliveryTime"/>
+        <prompt cond="entry == 'init'">
+          <audio expr="PromptPath + 'GetDeliveryTime_init.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'reentry'">
+          <audio expr="PromptPath + 'GetDeliveryTime_reentry.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'rej'">
+          <audio expr="PromptPath + 'GetDeliveryTime_rej.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'nst'">
+          <audio expr="PromptPath + 'GetDeliveryTime_nst.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'help'">
+          <audio expr="PromptPath + 'GetDeliveryTime_help.wav'"/>
+        </prompt>
+
+        <grammar src="../grammars/time.grxml#Time"/>
+        <filled>
+          <assign name="DeliveryTime" expr="time"/>
+          <if cond="(DeliveryTime &gt; 100) &amp;&amp; (DeliveryTime &lt; 900)">
+            <audio expr="PromptPath + 'GetDeliveryTime_bad.wav'"/>
+            <clear namelist="time"/>
+            <assign name="entry" expr="'reentry'"/>
+          <else/>
+            <goto expr="'ConfirmDeliveryTime.jsp?time=' + DeliveryTime"/>
+          </if>
+        </filled>
+      </field>
+    </form>
+
+</vxml>
+
+

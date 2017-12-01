@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+
+    <var name="entry" expr="'init'"/>
+
+    <form id="checkToppings">
+      <block>
+        <if cond="PizzaToppings != null">
+          <goto expr="'ConfirmSizeAndToppings.jsp?toppings=' + PizzaToppings"/>
+        <else/>
+          <goto next="#GetPizzaToppings"/>
+        </if>
+      </block>
+    </form>
+
+    <form id="GetPizzaToppings">
+
+      <field name="toppings">
+        <property name="nuance.grammarlabel" value="GetPizzaToppings"/>
+        <prompt cond="entry == 'init'">
+          <audio expr="PromptPath + 'GetPizzaToppings_init_alt.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'reentry'">
+          <audio expr="PromptPath + 'GetPizzaToppings_reentry.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'rej'">
+          <audio expr="PromptPath + 'GetPizzaToppings_rej.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'nst'">
+          <audio expr="PromptPath + 'GetPizzaToppings_nst.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'help'">
+          <audio expr="PromptPath + 'GetPizzaToppings_help.wav'"/>
+        </prompt>
+
+        <!--
+             For this sample, we'll assume that the user may only order at most
+             one of each topping.  We'll enable Nbesting for accuracy.
+          -->
+        <property name="maxnbest" value="5"/>
+        <grammar src="../grammars/pizza.grxml#Pizza_Toppings">
+          <!--
+               The <nuance:nbest> handler is identical to the <script> tag.
+               As a result, you could reference a script that is stored in a
+               remote file. However, for the purpose of convenience,
+               Nuance recommends specifying it inline.
+
+               The <nuance:nbest> handler may iterate through the interpretations
+               from the last recognition result to find one that is suitable.
+               If it finds one, it returns that interpretation.
+               If it does not find one, it may return "undefined". In turn,
+               this would cause a <nomatch> event.
+
+               <nuance:nbest> handlers are executed in their own anonymous scope
+               which is contained under the scope of the executing <field>.
+               For more information about <nuance:nbest> handlers and their
+               interactions when specified for multiple <grammar> elements,
+               see the "Using N-best" chapter in the NVP Application Developer Guide.
+            -->
+            <nuance:nbest><![CDATA[
+              browser.log("trace:?level=INFO", "Received the following possible results: " + lastresult$);
+              for( var i=0; i < lastresult$.length; i++ )
+              {
+                // Extract this interpretation
+                var interp = lastresult$[i].interpretation.toppings;
+
+                // The user can also ask for the list of toppings
+                if(interp == 'list') return lastresult$[i];
+
+                // Does this interpretation contain unique toppings?
+                var toppingsMap = new Object();
+                var toppingTokens = interp.split('|');
+                var t = 0;
+                while(t < toppingTokens.length)
+                {
+                  // Have we seen this already?
+                  var topping = toppingTokens[t];
+                  if(toppingsMap[topping] != undefined)
+                  {
+                    // This is a duplicate
+                    break;
+                  }
+                  else
+                  {
+                    // This is a first
+                    toppingsMap[topping] = true;
+                    t++;
+                  }
+                }
+
+                // Return the first interpretation with unique toppings
+                if(t == toppingTokens.length)
+                {
+                  browser.log("trace:?level=INFO", "Interpretation has unique toppings: " + lastresult$[i]);
+                  return lastresult$[i];
+                }
+                else
+                {
+                  browser.log("trace:?level=INFO", "Interpretation has duplicate toppings: " + lastresult$[i]);
+                }
+              }
+
+              // If we got to this point, then all of the possible
+              // results contained duplicate toppings.  Perhaps the
+              // caller really does want duplicates, so just return
+              // the first result
+              browser.log("trace:?level=INFO", "No unique topping set found, returning first interpretation: " + lastresult$[0]);
+              return lastresult$[0];
+          ]]></nuance:nbest>
+        </grammar>
+
+        <filled>
+          <if cond="toppings == 'list'">
+            <audio expr="PromptPath + 'toppings_2.wav'"/>
+            <audio src="pause:400"/>
+            <assign name="entry" expr="'init'"/>
+            <goto next="#GetPizzaToppings"/>
+          <else/>
+            <assign name="PizzaToppings" expr="toppings"/>
+            <goto expr="'ConfirmSizeAndToppings.jsp?toppings=' + PizzaToppings"/>
+          </if>
+        </filled>
+      </field>
+    </form>
+
+    <form id="reentry">
+      <block>
+        <assign name="entry" expr="'reentry'"/>
+        <goto next="#GetPizzaToppings"/>
+      </block>
+    </form>
+
+</vxml>
+

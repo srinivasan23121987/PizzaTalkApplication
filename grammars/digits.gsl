@@ -1,0 +1,155 @@
+;GSL2.0
+
+DIGIT4:public
+(?DIG_UH
+	[
+		(?ITS_PIN DIGIT_STRING_4:res) {<digits $res>}
+	]
+	?please
+)
+
+DIGIT8:public 
+(?DIG_UH
+	[
+		(?ITS_PID DIGIT_STRING_8:res) {<digits $res>}
+	]
+	?please
+)
+
+DIGIT9
+(?DIG_UH
+	[
+		(?ITS_SSN DIGIT_STRING_9:res) {<digits $res>}
+	]
+	?please
+)
+
+DIGIT10:public
+(?DIG_UH
+	[
+		(DIGIT_STRING_10:res) {<digits $res>}
+	]
+	?please
+)
+
+DIGIT12:public
+(?DIG_UH
+	[
+		(?ITS_CLAIM DIGIT_STRING_12:res) {<digits $res>}
+	]
+	?please
+)
+
+DIGIT_STRING_4
+(
+	SUB_DIGIT:d1
+	SUB_DIGIT:d2
+	SUB_DIGIT:d3
+	SUB_DIGIT:d4
+) {return(strcat(strcat(strcat($d1 $d2) $d3) $d4))}
+
+DIGIT_STRING_8
+(
+	SUB_DIGIT:d1
+	SUB_DIGIT:d2
+	SUB_DIGIT:d3
+	SUB_DIGIT:d4
+	SUB_DIGIT:d5
+	SUB_DIGIT:d6
+	SUB_DIGIT:d7
+	SUB_DIGIT:d8
+) {return(strcat(strcat(strcat(strcat(strcat(strcat(strcat($d1 $d2) $d3) $d4) $d5) $d6) $d7) $d8))}
+
+DIGIT_STRING_9
+(
+	SUB_DIGIT:d1
+	SUB_DIGIT:d2
+	SUB_DIGIT:d3
+	SUB_DIGIT:d4
+	SUB_DIGIT:d5
+	SUB_DIGIT:d6
+	SUB_DIGIT:d7
+	SUB_DIGIT:d8
+	SUB_DIGIT:d9
+) {return(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat($d1 $d2) $d3) $d4) $d5) $d6) $d7) $d8) $d9))}
+
+DIGIT_STRING_10
+(
+	SUB_DIGIT:d1
+	SUB_DIGIT:d2
+	SUB_DIGIT:d3
+	SUB_DIGIT:d4
+	SUB_DIGIT:d5
+	SUB_DIGIT:d6
+	SUB_DIGIT:d7
+	SUB_DIGIT:d8
+	SUB_DIGIT:d9
+	SUB_DIGIT:d10
+) {return(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat($d1 $d2) $d3) $d4) $d5) $d6) $d7) $d8) $d9) $d10))}
+
+DIGIT_STRING_12
+(
+	SUB_DIGIT:d1
+	SUB_DIGIT:d2
+	SUB_DIGIT:d3
+	SUB_DIGIT:d4
+	SUB_DIGIT:d5
+	SUB_DIGIT:d6
+	SUB_DIGIT:d7
+	SUB_DIGIT:d8
+	SUB_DIGIT:d9
+	SUB_DIGIT:d10
+	SUB_DIGIT:d11
+	SUB_DIGIT:d12
+) {return(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat(strcat(
+	strcat($d1 $d2) $d3) $d4) $d5) $d6) $d7) $d8) $d9) $d10) $d11) $d12))}
+
+SUB_DIGIT_ZERO_THRU_NINE
+[
+	[ zero oh ] {return("0")}
+	one			{return("1")}
+	two			{return("2")}
+	three		{return("3")}
+	four		{return("4")}
+	five		{return("5")}
+	six			{return("6")}
+	seven		{return("7")}
+	eight		{return("8")}
+	nine		{return("9")}
+]
+
+SUB_DIGIT
+[
+
+	SUB_DIGIT_ZERO_THRU_NINE:n {return($n)}
+]
+
+ITS_PID
+[
+	(it is)
+	it's
+	([my the] ?provider ?id number is)
+]
+
+ITS_SSN
+[
+	(it is)
+	it's
+	([my the] ?(social security) number is)
+]
+
+ITS_PIN
+[
+	(it is)
+	it's
+	([my the] ?pin number is)
+]
+
+ITS_CLAIM
+[
+	(it is)
+	it's
+	([my the] ?claim number is)
+]
+
+DIG_UH	[um uh oh]

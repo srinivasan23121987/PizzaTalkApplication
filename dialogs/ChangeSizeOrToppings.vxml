@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+
+    <form id="ChangeSizeOrToppings">
+      <var name="entry" expr="'init'"/>
+
+      <field name="command">
+        <property name="nuance.grammarlabel" value="ChangeSizeOrToppings"/>
+        <prompt cond="entry == 'init'">
+          <audio expr="PromptPath + 'ChangeSizeOrToppings_init.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'rej'">
+          <audio expr="PromptPath + 'ChangeSizeOrToppings_rej.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'nst'">
+          <audio expr="PromptPath + 'ChangeSizeOrToppings_nst.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'help'">
+          <audio expr="PromptPath + 'ChangeSizeOrToppings_help.wav'"/>
+        </prompt>
+
+        <grammar src="../grammars/PizzaIdentify.grxml#PIZZA_IDENTIFY"/>
+        <filled>
+          <if cond="command == 'size'">
+            <assign name="PizzaSize" expr="null"/>
+            <goto next="GetPizzaSize.vxml#reentry"/>
+          </if>
+          <if cond="command == 'toppings'">
+            <assign name="PizzaToppings" expr="null"/>
+            <goto next="GetPizzaToppings.vxml#reentry"/>
+          </if>
+          <if cond="command == 'both'">
+            <assign name="PizzaToppings" expr="null"/>
+            <assign name="PizzaSize" expr="null"/>
+            <goto next="GetPizzaSize.vxml#reentry"/>
+          </if>
+          <goto next="GetPhoneNumber.vxml"/>
+        </filled>
+      </field>
+    </form>
+</vxml>
+

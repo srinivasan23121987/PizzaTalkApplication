@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+    <form id="Welcome">
+      <block>
+        <nuance:taskbegin name="sold_a_pizza"/>
+        <audio expr="PromptPath + 'nuancebrand8k.wav'"/>
+        <audio expr="PromptPath + 'Welcome.wav'"/>
+        <audio src="pause:750"/>
+        <goto next="GetPizzaSize.vxml"/>
+      </block>
+    </form>
+</vxml>
+

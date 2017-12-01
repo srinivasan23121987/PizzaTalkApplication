@@ -1,0 +1,386 @@
+;GSL2.0
+
+Digit 
+[
+	[zero oh] {return ("0")}
+	one {return ("1")}
+	two {return ("2")}
+	three {return ("3")}
+	four {return ("4")}
+	five {return ("5")}
+	six {return ("6")}
+	seven {return ("7")}
+	eight {return ("8")}
+	nine {return ("9")}
+]
+
+Digits
+[
+	Digit:d {return ($d)}
+	(Digit:d1 Digit:d2 {return (strcat($d1 $d2))})
+	(Digit:d1 Digit:d2 Digit:d3 {return (strcat($d1 strcat($d2 $d3)))})
+	(Digit:d1 Digit:d2 Digit:d3 Digit:d4 {return(strcat($d1 strcat($d2 strcat($d3 $d4))))})
+	(Digit:d1 Digit:d2 Digit:d3 Digit:d4 Digit:d5 {return (strcat($d1 strcat($d2 strcat($d3 strcat($d4 $d5)))))})
+]
+	
+Apartment_Number Digits:d {<apartmentnum $d>}
+
+Street_Number Digits:d {<streetnum $d>}
+
+Street_Name
+(
+  ?(i live on) Street:s ?street {<streetname $s>}
+) 
+Street
+[
+	(midway street {return ("midway street")})
+	(powell street {return ("powell street")})
+	(point street {return ("point street")})
+	(bay street {return ("bay street")})
+	(mason street {return("mason street")})
+	(stockton street {return("stockton street")})
+	(belfair place {return("belfair place")})
+	(kearny street {return("kearny street")})
+	(edith street {return("edith street")})
+	(maple street {return ("Maple Street")})
+	(oak lane{return ("Oak Lane")})
+	(guardino drive{return ("Guardino Drive")})
+]
+
+Pizza_Toppings:public
+[
+    (
+       ?[a an]
+       ?[
+             (can i have ?a)
+             (eyed like ?a)
+             (i would like ?a)
+	       (give me ?a)
+		 (gimme ?a)
+		 (i want ?a)
+        ]
+ 
+        [
+            Toppings:t {<toppings $t>}
+            [cheese plain] {<toppings "plain">}
+            TheWorks:t {<toppings "the_works">}
+        ]
+        ?pizza
+    ) 
+    [
+        ([nothing none] ?thanks)
+        (no thanks)
+    ]{<toppings "plain">}
+    [
+        List
+        Repeat
+    ] {<toppings "list">}
+]
+
+TheWorks
+[
+    everything 
+    (everything you [got have])
+    (the works)
+    (?a combo)
+]
+
+;;.Kind 
+;;(
+;;    Size:s {<size $s>}
+;;    [
+;;        Toppings:t {<toppings $t>} 
+;;        SpecialPizzaType:t {<toppings $t>}
+;;    ] 
+;;    ?pizza 
+;;)
+
+Size
+(
+  [
+    (?a personal ?pan) {return ("personal")}
+    (?a small) {return ("small")}
+    (?a medium) {return ("medium")}
+    (?a large) {return ("large")}
+    (?an extra large) {return ("extra_large")}
+    ([six seven] inch) {return("personal")}
+    ([eight nine ten eleven twelve] inch) {return ("small")}
+    ([thirteen fourteen fifteen] inch) {return ("medium")}
+    ([sixteen seventeen eighteen] inch) {return ("large")}
+    ([nineteen twenty twenty-one] inch) {return ("extra_large")}
+    (huge) {return ("extra_large")}
+    (big) {return ("large")}
+    (really big) {return ("extra_large")}
+    (enormous) {return ("extra_large")}
+    ([kindof kinda] big) {return ("medium")}    
+  ]
+  ?pizza
+)
+
+Pizza_Size:public Size:s {<size $s>}
+
+
+Toppings
+[
+    Topping:t {return ($t)}
+    (Topping:t1 ?and Topping:t2) {return (strcat($t1 strcat("|" $t2)))}
+    (Topping:t1 ?and Topping:t2 ?(and ?[finally (last but not least)]) Topping:t3) {return (strcat($t1 strcat("|" strcat($t2 strcat("|" $t3)))))}    
+
+;    (Topping:t1 ?and Topping:t2 ?and Topping:t3) {return (strcat($t1 strcat("|" strcat($t2 strcat("|" $t3)))))}    
+;    (Topping:t1 ?and Topping:t2 ?and Topping:t3 ?and Topping:t4) {return (strcat($t1 strcat("|" strcat($t2 strcat("|" strcat($t3 strcat("|" $t4)))))))}    
+;    (Topping:t1 ?and Topping:t2 ?and Topping:t3 ?and Topping:t4 ?(and ?[finally (last but not least)]) Topping:t5) {return (strcat($t1 strcat("|" strcat($t2 strcat("|" strcat($t3 strcat("|" strcat($t4 strcat("|" $t5)))))))))}    
+
+
+    
+]
+
+;Toppings
+;[
+;    Topping:t {return (($t))}
+;    (Topping:t ?and Toppings:ts) {return (insert-begin($ts $t))}
+;]
+
+Topping
+(
+  
+   [
+	anchovies {return ("anchovies")}
+	(artichoke hearts) {return ("artichoke_hearts")}
+	bacon {return ("bacon")}
+	(canadian bacon) {return ("canadian_bacon")}
+	chicken {return ("chicken")}
+	(extra cheese) {return ("extra_cheese")}
+	garlic {return ("garlic")}
+	[(green peppers) peppers] {return ("green_peppers")}
+	[(ground beef) beef hamburger] {return ("ground_beef")}
+	;ham {return ("ham")}
+	[([jalapeno halapeenio] peppers) jalapenos halapeenios] {return ("jalapenos")} 
+  (lotsa garlic) {return ("lotsa_garlic")}
+  [linguica lingueesa] {return ("linguica")}
+	mushrooms {return ("mushrooms")}
+	(?black olives) {return ("olives")}
+	onions {return ("onions")}
+	pastrami {return ("pastrami")}
+	pepperoni {return ("pepperoni")}
+	pineapple {return ("pineapple")}
+	(red onions) {return ("red_onions")}
+	salami {return ("salami")}
+	sausage {return ("sausage")}
+	shrimp {return ("shrimp")}
+	spinach {return ("spinach")}
+  tomatoes {return ("tomatoes")}
+	zucchini {return ("zucchini")}
+  ]
+
+)
+
+SpecialPizzaType
+[
+     [(?(king arthurs) supreme) combo everything]
+     (?gourmet [veggie vegetarian])
+     (chicken and garlic gourmet)
+     (italian garlic supreme)
+     (bacon super deli)
+    (garden pesto)
+    (western barbeque chicken supreme)
+    (?guineveres garden ?delight)
+    (montagues all meat marvel)
+    hawaiian    
+] 
+
+Repeat repeat 
+;will flesh this out later
+    
+List
+[
+    ( ?( tell me ) [ ( what are ) what're ] ?( all ?of ) the toppings ?please )
+    ( please tell me [ ( what are ) what're ] ?( all ?of ) the toppings )
+    ( ?( tell me ?(all ?of) the ) toppings ?please ) 
+    ( ?please tell me ?(all ?of) the toppings )
+    ( ?( [ can could would will ] you ) ?please tell me what ?( all ?of ) the toppings are ) 
+    ( ?[ ( what are ) what're list] ?[ my the ] [ choices options ] ?please )
+    ( whuddaya [ got have ] )
+    ( what have you got)
+    ( [ whattuhv what've ] you got )
+    ( what do you have)    	
+]
+
+;this is for what the user would like to change
+;;.WhatToChange WhatToChange:w {<what_to_change $w>}
+
+WhatToChange; it's possible this grammar may still need some work!
+[
+    ;List {return("list")}
+    (
+        ?(
+             ?[
+                 ( i would like to )
+		     ( i'd like to )	
+                 ( could i )
+                 ( can i )
+		     ( you should )	
+             ]
+             change
+         )
+         ?[my the]
+         ?pizza         
+         [
+             [
+                 size 
+                 (
+                     how 
+                     big 
+                     ?(
+                          [
+                              ([my the] pizza) 
+                              it
+                          ] 
+                          is
+                       )
+                 ) 
+             ] {return("size")}
+             [toppings (what's on [it ([my the] pizza)])] {return("toppings")}
+             [
+                 both 
+                 (?both ?the size and ?the toppings) 
+                 (?both what's on it and how big ?([it pizza] is))
+                 CANCEL ;cancel should start over
+             ] {return("both")}
+             Nothing {return("nothing")}
+         ]
+         ?please
+    )
+]
+
+
+CANCEL 
+[ 
+   cancel 
+   ( start ?all over ) 
+]
+
+Nothing
+[
+    nothing
+    (none of these)
+    (none of the above)    
+]
+
+IWant 		
+(
+      [ IdLike iWant INeed] 
+)
+
+iWant		[(i want) i_want]
+IdLike	[(i would like) i_would_like (i'd like)]
+INeed		[(i need) i_need]
+
+;;.PhoneNumber PhoneNumber:p {<phone_number $p>}
+
+;;PhoneNumber
+;;[
+;;    (?(area code) TEN_DIGITS:d10) {return($d10)}
+;;    SEVEN_DIGITS:d7 {return($d7)}
+;;]
+
+
+;; Copyright (C) 1999-2000 Nuance Communications
+;;
+;; SOYesNo.grammar
+;; Author: Jennifer Balogh
+;; Last Modified: March 25, 1999
+
+;; Two grammars are available in SOYesNo: YesNo and StrictYesNo 
+;; YesNo handles loose expressions, for example, "Yes, that's correct, thank you." 
+;; StrictYesNo is limited to one-word responses.
+
+
+YesNo (?YesNo_PreHesitation~.01 YesNo_CORE)
+
+StrictYesNo (StrictYesNo_CORE)
+
+;; --------------------------------------------------------------------------------------
+;; Fillers
+
+YesNo_PreHesitation [
+    um
+    uh
+    hm
+    ]
+
+;; --------------------------------------------------------------------------------------
+;; Core grammars
+
+YesNo_CORE
+[
+	YesLoose	{<SOYesNo yes>}
+	NoLoose		{<SOYesNo no>}
+        
+]
+
+StrictYesNo_CORE
+[
+	YesStrict	{<SOYesNo yes>}
+	NoStrict	{<SOYesNo no>}
+        
+]
+
+;; Subgrammar used in YesNo
+YesLoose 
+[
+	(yes please)
+	([
+		(yes ?(it ?[sure certainly] is))
+		(it ?[sure certainly] is)
+		yup
+		yeah
+		okay
+		sure
+		(you got it)
+		(?(?yes [that's it's (that is) (it is)]) [right correct])
+		(?[yes yeah] i [would do])
+	] ?[thanks (thank you)])
+]
+
+;; Subgrammar used in StrictYesNo
+YesStrict
+[
+	yes
+	yup
+	yeah
+	right 
+	correct
+]
+
+;; Subgrammar used in YesNo
+NoLoose
+([
+	nope
+	(absolutely not)
+	(no ?[way])
+	(?no [(it isn't) (it's not) (it is not)])
+	(?(?no [that's it's (that is) (it is)])
+		[
+			wrong
+			(not [correct right])
+			incorrect
+		])
+	(?no i [(would not) wouldn't (do not) don't])
+] ?[thanks (thank you)])
+
+;; Subgrammar used in StrictYesNo
+NoStrict
+[
+	no
+	nope
+	wrong
+	incorrect
+]
+
+
+
+
+
+
+
+

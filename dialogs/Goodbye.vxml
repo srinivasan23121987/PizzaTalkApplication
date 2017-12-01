@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+    <form id="WrapUp">
+      <block>
+        <audio expr="PromptPath + 'thanks_for_calling.wav'"/>
+        <audio expr="PromptPath + 'nuancebrand8k.wav'"/>
+        <audio src="pause:1000"/>
+        <exit/>
+      </block>
+    </form>
+</vxml>
+

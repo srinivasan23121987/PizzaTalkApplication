@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+
+    <form id="ConfirmDeliveryNow">
+      <var name="entry" expr="'init'"/>
+
+      <field name="confirm">
+        <property name="nuance.grammarlabel" value="ConfirmDeliveryNow"/>
+        <prompt cond="entry == 'init'">
+          <audio expr="PromptPath + 'ConfirmDeliveryNow_init.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'rej'">
+          <audio expr="PromptPath + 'ConfirmDeliveryNow_rej.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'nst'">
+          <audio expr="PromptPath + 'ConfirmDeliveryNow_nst.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'help'">
+          <audio expr="PromptPath + 'ConfirmDeliveryNow_help.wav'"/>
+        </prompt>
+
+        <grammar src="../grammars/Confirm.grxml#Confirm"/>
+        <filled>
+          <if cond="confirm == 'yes'">
+            <assign name="DeliveryTime" expr="'now'"/>
+            <goto expr="'WrapUp.jsp?toppings=' + PizzaToppings"/>
+          <else/>
+            <goto next="GetDeliveryTime.vxml"/>
+          </if>
+        </filled>
+      </field>
+    </form>
+</vxml>
+

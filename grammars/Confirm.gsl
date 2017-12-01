@@ -1,0 +1,26 @@
+;GSL2.0
+
+Uh [um uh]
+
+ 
+Confirm:public	[
+	 						[
+  								yes yeah yup sure okay correct right
+    								( ?( ?[yes yeah ] [ that's ( that is ) ] ) [ right correct ])
+    								( ?[ yes yeah ] (it is) ?[ correct right ] )
+    								( you got it )
+	 							( ?[ yes yeah ] i [ do would did ] )								
+	 							( ?[ yes yeah ] please )								
+							] {<confirm "yes">}
+							[
+								no nope
+								(no way)
+								(?no ?[that's (that is)] [wrong incorrect])
+								(?(?no [(it is) it's (that is) that's]) not [correct right])
+								(?no it [isn't (is not)])
+								(?no it's not )
+								(?no i [don't (do not) wouldn't (would not)])
+								( no don't )								
+							] {<confirm "no">}
+]
+

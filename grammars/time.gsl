@@ -1,0 +1,152 @@
+;GSL2.0
+
+HourNotTwelve [
+	OneToNine:n 	{return(mul($n 100))}
+        ten         	{return(1000)}
+        eleven      	{return(1100)}
+]
+
+Hour [ 
+	HourNotTwelve:h {return($h)}
+        twelve      	{return(0)}
+] 
+
+Minutes  
+[ 
+	ten               			{return(10)}
+	eleven            			{return(11)}
+	twelve            			{return(12)}
+	thirteen          			{return(13)}
+	fourteen          			{return(14)}
+	fifteen           			{return(15)}
+	sixteen           			{return(16)}
+	seventeen         			{return(17)}
+	eighteen          			{return(18)}
+	nineteen          			{return(19)}
+	TwentyToFifty:n   			{return($n)}
+	(TwentyToFifty:n1 OneToNine:n2)		{return(add($n1 $n2))}
+	(oh OneToNine:n)   			{return($n)}
+]
+
+OneToNine [one   {return(1)}
+           two   {return(2)}
+           three {return(3)}
+           four  {return(4)}
+           five  {return(5)}
+           six   {return(6)}
+           seven {return(7)}
+           eight {return(8)}
+           nine  {return(9)}
+]
+
+TwentyToFifty [
+           twenty            {return(20)}
+           thirty            {return(30)}
+           forty             {return(40)}
+           fifty             {return(50)}
+]
+
+AM  [ ( in the morning ) ( a m ) ]
+
+PM  [ ( in the [afternoon evening] ) ( at night ) (p m) ]
+
+; For expressions like "fifteen forty five", meaning "3:45 PM"
+
+ThirteenThruTwentyFour [ thirteen {return(1300)}
+                         fourteen {return(1400)}
+                         fifteen {return(1500)}
+                         sixteen {return(1600)}
+                         seventeen {return(1700)}
+                         eighteen {return(1800)}
+                         nineteen {return(1900)}
+                         twenty {return(2000)}
+                         (twenty [
+					one {return(2100)}
+                                  	two {return(2200)}
+                                  	three {return(2300)}
+                                  	four {return(0)}
+				] ) 
+			]
+
+OClock o'clock {return(0)}
+
+Half half {return(30)}
+
+Quarter quarter {return(15)}
+
+; Default grammar for "noon", "midnight".
+
+Twelve0   [noon     {return(1200)}
+           midnight {return(0)} ]
+
+; Grammar for "noon" and "midnight" used in context of "before" expression;
+; (e.g., "quarter before midnight").  Final return value will be less than
+; 2400.
+
+Twelve24  [noon {return(1200)} midnight {return(2400)} ]
+
+; Time grammar for expressions that are AM/PM ambiguous.
+; Values between 0 and 1159 are returned.
+
+AmbigTime 
+[ 
+	(Hour:h [Minutes:m OClock:m])      		{return(add($h $m))}
+      	Hour:h                             		{return($h)}
+]
+
+
+;; time grammar for hundreds time
+
+HundredsTime
+[
+	(Hour:h hundred ?hours)				{return($h)}
+	(ThirteenThruTwentyFour:h hundred ?hours)	{return($h)}
+]
+
+;; before and after the hour times
+
+RelativeAmbigTime
+[
+	(Quarter:m [to til until of before] HourNotTwelve:h) 	{return(minus(minus($h 40) $m))}
+	(Quarter:m [to til until of before] twelve)		{return(minus(1160 $m))}
+
+	(Half:m past Hour:h)					{return(add($h $m))}
+
+	(Quarter:m [past after] Hour:h)				{return(add($h $m))}
+]
+
+; Top-level time grammar.  The return values are integers between 0 and 2359.
+; Expressions that are AM/PM ambiguous have two possible return values (e.g.,
+; "five o'clock" could return either 500 or 1700).  Expressions that are not
+; AM/PM ambiguous have only a single possible return value.  This includes
+; expressions that would be ambiguous except that they are followed by "a m"
+; or "p m".
+
+TIME
+[
+	;; unambiguous time
+
+	(AmbigTime:t AM)                       	{return($t)}
+	(AmbigTime:t PM)                       	{return(add($t 1200))}
+
+	;; ambiguous time
+	AmbigTime:t                            	{return(add($t 1200))}
+	AmbigTime:t                            	{return($t)}
+	
+	RelativeAmbigTime:t			{return(add($t 1200))}
+	RelativeAmbigTime:t			{return($t)}
+	
+
+	;; 24 hour clock time
+       	(ThirteenThruTwentyFour:h Minutes:m)	{return(add($h $m))}
+
+	;; hundreds time 
+	HundredsTime:t				{return($t)}
+
+	;; noon, midight
+       	(noon time)               		{return(1200)}
+       	(?(twelve ?o'clock) Twelve0:h)         	{return($h)}
+]
+
+Time:public TIME:t {<time $t>}
+

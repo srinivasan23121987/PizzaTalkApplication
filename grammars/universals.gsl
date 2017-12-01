@@ -1,0 +1,25 @@
+;GSL2.0
+
+Uh [um uh]
+Please please
+IWant [(i want) (i wanna) (i would like) (get me)]
+
+Help:public (?Uh ?(i [want need]) [help WhatsAvailable (i don't know)] ?Please)
+
+Cancel:public (?Uh [ cancel stop ( start ?all over ) ] ?Please)
+
+Goodbye:public (?Uh goodbye ?Please)
+
+Pause:public (?Uh [pause (go to sleep)] ?Please)
+
+WhatsAvailable			[
+					([what's (what is) whats] available)
+					([(what are) what're what_are] [my the] [choices options])
+					(what [(can i) can_i] [say do (choose ?from)])
+]
+
+Operator:public (?Uh ?IWant ?(to speak to) ?an [operator agent] ?Please)
+
+Repeat:public (?Uh repeat ?Please)
+
+MainMenu:public (?Uh [(main menu) (start over) (go to the top)] ?Please)

@@ -1,0 +1,97 @@
+;GSL2.0
+
+PIZZA_PLEASE_CHANGE (?please
+    [?(i ?really [want (would like)] to) ?(i'd ?really like to)]
+    [change correct fix]
+)
+
+PIZZA_ITS [it's (it is)]
+
+PIZZA_ALL [all totally completely entirely]
+
+PIZZA_WRONG [wrong incorrect]
+
+PIZZA_IS_WRONG (is [wrong incorrect (not right) (not correct)])
+
+PIZZA_ARE_WRONG (are [wrong incorrect (not right) (not correct)])
+
+PIZZA_THE_SIZE (?the size)
+
+PIZZA_THE_TOPPINGS (?the toppings)
+
+PIZZA_IDENTIFY_SINGLE_CORE
+[
+    PIZZA_THE_SIZE          {<command size>}
+    PIZZA_THE_TOPPINGS      {<command toppings>}
+]
+
+PIZZA_IDENTIFY_DOUBLE_CORE ( [
+    both		
+    (?both PIZZA_THE_SIZE ?and PIZZA_THE_TOPPINGS)   
+    (?both PIZZA_THE_TOPPINGS ?and PIZZA_THE_SIZE)   
+ ]) {<command both>}
+
+PIZZA_IDENTIFY_EVERYTHING_CORE
+[
+    (?PIZZA_PLEASE_CHANGE~.01
+        [(all of [them these])
+         (all of it)
+         everything
+         (?the whole thing)])
+
+    (PIZZA_ITS PIZZA_ALL PIZZA_WRONG)
+
+    (they're PIZZA_ALL PIZZA_WRONG)
+
+    (all of [them these] PIZZA_ARE_WRONG)
+
+    ([(all of it)
+       everything
+       (?the whole thing)]
+      PIZZA_IS_WRONG)
+
+] {<command both>}
+
+
+PIZZA_IDENTIFY_NOTHING_CORE
+[
+    (none ?(of [them these]) ?PIZZA_ARE_WRONG~.01)
+    (nothing ?PIZZA_IS_WRONG~.01)
+    (there's nothing wrong)
+    (?(?i don't ?([want need] to)) change [nothing anything (any of [them these])])
+
+] {<command none>}
+
+PIZZA_IDENTIFY:public (?PIZZA_PreHesitation~.01 ?PIZZA_PreFiller~.0001  [
+   (?PIZZA_PLEASE_CHANGE~.01 PIZZA_IDENTIFY_SINGLE_CORE)
+
+   (PIZZA_IDENTIFY_SINGLE_CORE PIZZA_IS_WRONG)
+
+   (?PIZZA_PLEASE_CHANGE~.01 PIZZA_IDENTIFY_DOUBLE_CORE)
+
+   (PIZZA_IDENTIFY_DOUBLE_CORE PIZZA_ARE_WRONG)
+
+   PIZZA_IDENTIFY_EVERYTHING_CORE
+
+   PIZZA_IDENTIFY_NOTHING_CORE
+ ] ?PIZZA_PostFiller~.0001)
+
+;; Allow ums and uhs as prefixes.
+PIZZA_PreHesitation [uh hm um]
+
+;; Endings
+PIZZA_PostFiller [please thanks (thank you)]
+
+;;
+;; Prefillers:
+;;
+
+PIZZA_PreFiller
+[
+   ; Prompt specific
+   ; Speech object specific
+   (i [guess suppose])
+   (let me see)
+]
+
+

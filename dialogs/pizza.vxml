@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0">
+  <property name="speedvsaccuracy" value="1.0"/>
+  <property name="maxspeechtimeout" value="10s"/>
+  <property name="timeout" value="8s"/>
+  <property name="confidencelevel" value=".50"/>
+
+  <var name="PromptPath" expr="'../prompts/'"/>
+  <var name="PizzaSize" expr="null"/>
+  <var name="PizzaToppings" expr="null"/>
+  <var name="PhoneNumber" expr="null"/>
+  <var name="DeliveryTime" expr="null"/>
+
+  <link event="help">
+    <grammar src="../grammars/universals.grxml#Help" weight="0.01"/>
+  </link>
+  <link event="repeat">
+    <grammar src="../grammars/universals.grxml#Repeat" weight="0.01"/>
+  </link>
+  <link next="Goodbye.vxml">
+    <grammar src="../grammars/universals.grxml#Goodbye" weight="0.01"/>
+  </link>
+  <link next="pizza.vxml">
+    <grammar src="../grammars/universals.grxml#Cancel" weight="0.01"/>
+  </link>
+
+  <!-- global noinput, nomatch behavior -->
+    <catch event="noinput">
+      <assign name="entry" expr="'nst'"/>
+      <reprompt/>
+    </catch>
+
+    <catch event="nomatch">
+      <assign name="entry" expr="'rej'"/>
+      <reprompt/>
+    </catch>
+
+    <!-- universals -->
+    <catch event="help">
+      <assign name="entry" expr="'help'"/>
+      <reprompt/>
+    </catch>
+
+    <catch event="repeat">
+      <throw event="help"/>
+    </catch>
+
+
+    <catch event="error">
+      <log label="trace:?level=STATUS" expr="'Script Error Event: ' + _event"/>
+      <log label="trace:?level=STATUS" expr="'Script Error Message: ' + _message"/>
+      <log label="trace:?level=STATUS" expr="'Script Error Exception: ' + _exception"/>
+      <audio expr="PromptPath + 'UE_SystemError.wav'"/>
+      <exit/>
+    </catch>
+
+    <form id="pizza">
+      <block>
+        <assign name="PizzaSize" expr="null"/>
+        <assign name="PizzaToppings" expr="null"/>
+        <assign name="PhoneNumber" expr="null"/>
+        <assign name="DeliveryTime" expr="null"/>
+        <goto next="Welcome.vxml"/>
+      </block>
+    </form>
+
+</vxml>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE vxml PUBLIC "-//Nuance/DTD VoiceXML 2.0//EN" "http://voicexml.nuance.com/dtd/nuancevoicexml-2-0.dtd">
+
+<vxml version="2.0" application="pizza.vxml">
+    <var name="entry" expr="'init'"/>
+
+    <form id="GetPhoneNumber">
+
+      <field name="digits">
+        <property name="nuance.grammarlabel" value="GetPhoneNumber"/>
+        <prompt cond="entry == 'init'">
+          <audio expr="PromptPath + 'GetPhoneNumber_init.wav'"/>
+        </prompt>
+	  <prompt cond="entry == 'reentry'">
+          <audio expr="PromptPath + 'GetPhoneNumber_reentry.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'rej'">
+          <audio expr="PromptPath + 'GetPhoneNumber_rej.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'nst'">
+          <audio expr="PromptPath + 'GetPhoneNumber_nst.wav'"/>
+        </prompt>
+        <prompt cond="entry == 'help'">
+          <audio expr="PromptPath + 'GetPhoneNumber_help.wav'"/>
+        </prompt>
+
+        <grammar src="../grammars/digits.grxml#DIGIT10"/>
+        <filled>
+          <assign name="PhoneNumber" expr="digits"/>
+          <goto expr="'ConfirmPhoneNumber.jsp?phone=' + PhoneNumber"/>
+        </filled>
+      </field>
+    </form>
+
+<form id="reentry">
+      <block>
+        <assign name="entry" expr="'reentry'"/>
+        <goto next="#GetPhoneNumber"/>
+      </block>
+    </form>
+</vxml>
+
